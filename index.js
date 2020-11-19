@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.static("build"));
 
 const errorHandler = (error, request, response, next) => {
-  console.log(error.message);
+  console.log('[errorHandler]::',error.message);
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformed id" });
   } else if (error.name === "ValidationError") {
@@ -108,7 +108,7 @@ app.post("/api/notes", (request, response, next) => {
   note
     .save()
     .then((savedNote) => {
-      response.json(savedNote);
+      response.json(savedNote.toJSON());
     })
     .catch((error) => next(error));
 });

@@ -8,18 +8,6 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static("build"));
 
-const errorHandler = (error, request, response, next) => {
-  console.log('[errorHandler]::',error.message);
-  if (error.name === "CastError") {
-    return response.status(400).send({ error: "malformed id" });
-  } else if (error.name === "ValidationError") {
-    return response.status(400).json({ error: error.message });
-  }
-  next(error);
-};
-
-app.use(errorHandler);
-
 let notes = [
   {
     id: 1,
@@ -124,6 +112,18 @@ app.put("/api/notes/:id", (request, response, next) => {
     .then((updatedNote) => response.json(updatedNote))
     .catch((error) => next(error));
 });
+
+const errorHandler = (error, request, response, next) => {
+  console.log("[errorHandler]::", error.message);
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformed id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
+  }
+  next(error);
+};
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
